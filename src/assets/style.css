@@ -1,0 +1,120 @@
+/* General Layout */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background color for the entire page */
+}
+
+.title {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #2c3e50; /* Dark blue color for the title */
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.description {
+    font-size: 1.3em;
+    color: #7f8c8d;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.input-group, .query-section, .download-section {
+    margin-bottom: 20px;
+}
+
+/* Labels and Inputs */
+.label {
+    font-weight: bold;
+    color: #34495e;
+    font-size: 1.1em;
+}
+
+.input-sizer.stacked {
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Query Section */
+.query-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: center;
+}
+
+.response-box {
+    margin-top: 10px;
+    font-size: 1em;
+    color: #007acc;
+}
+
+/* Button */
+.button {
+    padding: 10px 20px;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #005fa3;
+}
+
+/* Confirmation Message */
+.confirmation-message {
+    color: #28a745;
+    margin-top: 15px;
+    font-size: 1.1em;
+}
+
+/* Graph Styling */
+.graph-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.graph {
+    flex: 1;
+    min-width: 400px;
+    margin: 10px;
+}
+
+/* LLM Response */
+.llm-response {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+    font-family: 'Arial', sans-serif;
+    word-wrap: break-word;
+}
+
+/* Graph Container: Responsive behavior */
+@media screen and (max-width: 768px) {
+    .graph-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .graph {
+        min-width: 100%;
+    }
+}
