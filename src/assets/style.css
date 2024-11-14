@@ -32,6 +32,22 @@
     color: #34495e;
     font-size: 1.1em;
 }
+/* COVID Peak Period Button Styling */
+#covid-peak-button {
+    padding: 10px 20px;
+    background-color: #ff6f61; /* Distinct color for the COVID period button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#covid-peak-button:hover {
+    background-color: #e35b50; /* Darker shade on hover */
+}
 
 .input-sizer.stacked {
     width: 100%;
