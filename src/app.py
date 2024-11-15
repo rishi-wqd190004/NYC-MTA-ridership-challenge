@@ -1,9 +1,8 @@
-from dash import Dash, dcc, html, Input, Output, State, no_update
+from dash import Dash, dcc, html, Input, Output, State, callback_context
 import pandas as pd
 import plotly.express as px
-import plotly.io as pio
 import plotly.graph_objs as go
-import os, io
+import os
 from datetime import datetime
 from openai import OpenAI
 from dash.exceptions import PreventUpdate
@@ -66,8 +65,8 @@ app.layout = html.Div(className="main-container", children=[
 
     # Graph to display ridership trends side by side
     html.Div([
-        dcc.Graph(id='ridership-graph-1-peak', className="graph"),
-        dcc.Graph(id='ridership-graph-pre-pandemic-peak', className="graph")
+        dcc.Graph(id='ridership-graph-1', className="graph"),
+        dcc.Graph(id='ridership-graph-pre-pandemic', className="graph")
     ], className="graph-container"),
     
     html.Div([
@@ -88,44 +87,24 @@ app.layout = html.Div(className="main-container", children=[
 
 # Callback to set date range to COVID peak period when the button is clicked
 @app.callback(
-    [Output('date-range', 'start_date'),
-    Output('date-range', 'end_date'),
+    [Output('Date', 'start_date'),
+    Output('Date', 'end_date'),
     Output('ridership-graph-1', 'figure'),
     Output('ridership-graph-pre-pandemic', 'figure')],
     [Input('covid-peak-button', 'n_clicks'),
-    Input('date-range', 'start_date'),
-    Input('date-range', 'end_date'),
+    Input('Date', 'start_date'),
+    Input('Date', 'end_date'),
     Input('service-type', 'value')],
 )
-def show_covid_peak_period(n_clicks, start_date, end_date, selected_service):
-    # Set default date range or use COVID peak dates
-    if n_clicks:
-        # Set the COVID peak period date range
+
+def update_graphs(n_clicks, start_date, end_date, selected_service):
+    triggered_id = callback_context.triggered[0]['prop_id'].split('.')[0]
+    if triggered_id == 'covid-peak-button':
         start_date = pd.to_datetime('2020-03-01')
         end_date = pd.to_datetime('2021-06-30')
-    # Filter data based on selected date range and service type
     filtered_df = col_change(df)
     df1, df2 = slicing_df(filtered_df, selected_service, start_date, end_date)
-   
-    filtered_df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
 
-    # Create the updated graphs
-    fig1 = px.line(filtered_df, x='Date', y='Ridership', title="Ridership Trends")
-    fig2 = px.line(filtered_df, x='Date', y='Ridership', title="Pre-Pandemic vs Post-Pandemic Ridership")
-    return start_date, end_date, fig1, fig2  # Return new date range and updated figures
-
-# Callback to update the graph based on user input
-@app.callback(
-    [Output('ridership-graph-1', 'figure'),Output('ridership-graph-pre-pandemic', 'figure')],
-    [Input('service-type', 'value'),
-    Input('Date', 'start_date'),
-    Input('Date', 'end_date')]
-)
-def update_graph(selected_service, start_date, end_date):
-    # Filter data based on inputs
-    filtered_df = col_change(df)
-    df1, df2 = slicing_df(filtered_df, selected_service, start_date, end_date)
-   
     # Create first line chart
     fig1 = px.line(
         df1,
@@ -145,7 +124,8 @@ def update_graph(selected_service, start_date, end_date):
         #labels={"Ridership": "Monthly Ridership", "Date": "Date"}
     )
     fig2.update_layout(template="plotly_white")
-    return fig1, fig2
+
+    return start_date, end_date, fig1, fig2
 
 @app.callback(
     Output('image-save-confirmation', 'children'),
@@ -170,7 +150,7 @@ def download_image(n_clicks, fig1, fig2):
     fig2.write_image(fig2_filename)
     # img_bytes_1 = pio.to_image(fig1, format="png", engine='kaliedo')
     # img_bytes_2 = pio.to_image(fig2, format="png", engine='kaliedo')
-    return f'Images saved as {fig1_filename} and {fig2_filename}'#dcc.send_file(fig1_path)
+    return f'Images saved for referencing with LLM.'#dcc.send_file(fig1_path)
 
 
 # openai LLM
