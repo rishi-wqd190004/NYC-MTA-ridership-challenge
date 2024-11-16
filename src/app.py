@@ -8,6 +8,10 @@ from openai import OpenAI
 from dash.exceptions import PreventUpdate
 from utils import  slicing_df, col_change, convert_percent_to_num, encode_image
 
+# adding support to add openai_api_key
+if os.getenv("OPENAI_API_KEY") is None:
+    raise ValueError("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
+
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"),)
 
 df = pd.read_csv('/Users/rishinigam/kaggle_competitions/dash_app_november_24/dataset/MTA_Daily_Ridership.csv')
@@ -162,14 +166,14 @@ def download_image(n_clicks, fig1, fig2):
 def handle_query(n_clicks, query, selected_service, start_date, end_date):
     global saved_timestamp
     if not n_clicks or not query:
-        return "No query sent"
+        raise PreventUpdate
     fig1_path = f"imgs/fig1_{saved_timestamp}.png"
     fig2_path = f"imgs/fig2_{saved_timestamp}.png"
     base64_img_1 = encode_image(fig1_path)
     base64_img_2 = encode_image(fig2_path)
 
     # prompt
-    user_message = f"The user inquired: '{query}'. Based on the selected service '{selected_service}', please provide detailed insights into MTA ridership trends between {start_date} and {end_date}. Use data patterns and relevant metrics to deliver a comprehensive response."
+    user_message = f"The user inquired: '{query}'. Based on the selected service '{selected_service}', please provide detailed insights into MTA ridership trends between {start_date} and {end_date}. Use data patterns and relevant metrics to deliver a comprehensive response in not more than 5 lines."
     if base64_img_1 and base64_img_2:
         user_message += f" Also take reference from the following images:\nImage 1: {base64_img_1}\nImage 2: {base64_img_2}."
     else:
@@ -193,4 +197,4 @@ def handle_query(n_clicks, query, selected_service, start_date, end_date):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=8050,debug=True)
