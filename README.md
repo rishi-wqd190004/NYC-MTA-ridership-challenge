@@ -7,3 +7,16 @@ Submission for NYC MTA ridership challenge at plotly and Maven Analytics
 - Click to capture the graph
 - Ask query related to graph
 - LLM will reply with a simpler summarisation.
+
+# To run on your device
+
+## Option 1:
+- Use Docker
+
+```
+docker run -p 8050:8050 -e OPENAI_API_KEY="your_openai_key_here" rishi1304/nyc_mta_ridership_challenge_dash_app:latest
+```
+
+## Option 2:
+- Use git clone to clone this repository
+- Run ```python src/app.py```
