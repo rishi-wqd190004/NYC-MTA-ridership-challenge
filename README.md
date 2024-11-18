@@ -19,4 +19,6 @@ docker run -p 8050:8050 -e OPENAI_API_KEY="your_openai_key_here" rishi1304/nyc_m
 
 ## Option 2:
 - Use git clone to clone this repository
+- Add your OPENAI_API_KEY to environment like in bashrc, zshrc or similar
+- Optionally can add KEY into app.py in line 15
 - Run ```python src/app.py```

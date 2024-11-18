@@ -14,7 +14,8 @@ if os.getenv("OPENAI_API_KEY") is None:
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"),)
 
-df = pd.read_csv('/Users/rishinigam/kaggle_competitions/dash_app_november_24/dataset/MTA_Daily_Ridership.csv')
+df = pd.read_csv('/app/data/MTA_Daily_Ridership.csv')
+#df = pd.read_csv('/Users/rishinigam/kaggle_competitions/dash_app_november_24/dataset/MTA_Daily_Ridership.csv')
 
 saved_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 # processing
