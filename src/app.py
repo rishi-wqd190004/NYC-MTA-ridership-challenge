@@ -87,7 +87,12 @@ app.layout = html.Div(className="main-container", children=[
         html.Button("Submit", id="query-button", className="button"),
     ]),
 
-    html.Div(id="llm-response", className="llm-response"),
+    dcc.Loading(
+        id="loading",
+        type="circle",
+        children=[
+            html.Div(id="llm-response", className="llm-response")
+    ]),
 ])
 
 # Callback to set date range to COVID peak period when the button is clicked
