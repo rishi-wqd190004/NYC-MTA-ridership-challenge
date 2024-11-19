@@ -9,10 +9,8 @@ from dash.exceptions import PreventUpdate
 from utils import  slicing_df, col_change, convert_percent_to_num, encode_image
 
 # adding support to add openai_api_key
-if os.getenv("OPENAI_API_KEY") is None:
-    raise ValueError("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
-
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"),)
+# if os.getenv("OPENAI_API_KEY") is None:
+#     raise ValueError("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
 
 df = pd.read_csv('/app/data/MTA_Daily_Ridership.csv')
 #df = pd.read_csv('/Users/rishinigam/kaggle_competitions/dash_app_november_24/dataset/MTA_Daily_Ridership.csv')
@@ -57,15 +55,28 @@ app.layout = html.Div(className="main-container", children=[
         dcc.DatePickerRange(
             id='Date',
             start_date=pd.to_datetime('2020-01-01'),
-            end_date=pd.to_datetime('2023-12-31'),
-            display_format='YYYY-MM',
+            end_date=pd.to_datetime('2020-12-31'),
+            display_format='DD-MM-YYYY',
             className="input-sizer stacked",
         ),
     ], className="input-group"),
 
     # COVID Peak Period Button
     html.Div([
-        html.Button("Show COVID Peak Period", id="covid-peak-button", className="button"),
+        html.Div(
+            id="covid-tooltip-container",
+            children=[
+                html.Div([
+                html.Button("Show COVID Peak Period", id="covid-peak-button", className="button"),
+        ], className="input-group"),
+        html.Div(
+                "Dates: March 1, 2020 - June 30, 2021",  # Tooltip text
+                id="covid-tooltip",
+                className="tooltip-text",
+            ),
+        ],
+        className="tooltip-container",
+    ),
     ], className="input-group"),
 
     # Graph to display ridership trends side by side
@@ -79,8 +90,18 @@ app.layout = html.Div(className="main-container", children=[
         dcc.Download(id="download-image"),
     ], className="download-section"),
 
-    html.Div(id="image-save-confirmation", className="confirmation-message"),
-
+    html.Div(id="image-save-confirmation", className="confirmation-messages"),
+    # input openai key
+    html.Label("Enter your OpenAI API Key:"),
+    dcc.Input(
+        id='api-key-input',
+        type='password',  # Mask the input for security
+        placeholder='Enter your OpenAI API key'
+    ),
+    html.Button("Submit Key", id="submit-key-btn"),
+    html.Div(id="api-key-confirmation", className="confirmation-messages"),
+    # Hidden Store for the API key
+    dcc.Store(id='api-key-store'),
     html.Div(className="query-section", children=[
         html.Label("Ask a question about ridership trends:", className="label"),
         dcc.Input(id='query-input', type='text', placeholder='What was the trend for subways in 2021?', className="input-sizer stacked"),
@@ -94,6 +115,26 @@ app.layout = html.Div(className="main-container", children=[
             html.Div(id="llm-response", className="llm-response")
     ]),
 ])
+
+# callback for openai api key
+@app.callback(
+    [Output('api-key-store', 'data'),
+     Output('api-key-input', 'style'),
+     Output('submit-key-btn', 'style'),
+     Output('api-key-confirmation', 'children')],
+    [Input('submit-key-btn', 'n_clicks')],
+    [State('api-key-input', 'value')]
+)
+def store_api_key(n_clicks, api_key):
+    if n_clicks and api_key:
+        openai_api_key = api_key  # Set the API key for OpenAI
+        return (
+            openai_api_key,  # Store in dcc.Store
+            {'display': 'none'},  # Hide input field
+            {'display': 'none'},  # Hide submit button
+            "API Key has been set successfully!"
+        )
+    return None, {}, {}, ""
 
 # Callback to set date range to COVID peak period when the button is clicked
 @app.callback(
@@ -111,7 +152,7 @@ def update_graphs(n_clicks, start_date, end_date, selected_service):
     triggered_id = callback_context.triggered[0]['prop_id'].split('.')[0]
     if triggered_id == 'covid-peak-button':
         start_date = pd.to_datetime('2020-03-01')
-        end_date = pd.to_datetime('2021-06-30')
+        end_date = pd.to_datetime('2021-07-01')
     filtered_df = col_change(df)
     df1, df2 = slicing_df(filtered_df, selected_service, start_date, end_date)
 
@@ -162,14 +203,14 @@ def download_image(n_clicks, fig1, fig2):
     # img_bytes_2 = pio.to_image(fig2, format="png", engine='kaliedo')
     return f'Images saved for referencing with LLM.'#dcc.send_file(fig1_path)
 
-
 # openai LLM
 @app.callback(
     Output('llm-response', 'children'),
     [Input('query-button', 'n_clicks'),
-     Input('query-input', 'value'), Input('service-type', 'value'), Input('Date', 'start_date'), Input('Date', 'end_date')]
+     Input('query-input', 'value'), Input('service-type', 'value'), Input('Date', 'start_date'), Input('Date', 'end_date'),
+     Input('api-key-store', 'data')]
 )
-def handle_query(n_clicks, query, selected_service, start_date, end_date):
+def handle_query(n_clicks, query, selected_service, start_date, end_date, stored_api_key):
     global saved_timestamp
     if not n_clicks or not query:
         raise PreventUpdate
@@ -186,6 +227,8 @@ def handle_query(n_clicks, query, selected_service, start_date, end_date):
         user_message += " No images were available for reference."
 
     # llm resp
+    openai_api_key = stored_api_key
+    client = OpenAI(api_key=openai_api_key)#os.environ.get("OPENAI_API_KEY"),)
     chat_completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": "You are an insightful assistant specializing in MTA ridership data, committed to providing clear, data-driven explanations based on the data you receive. If a question falls outside the data provided, respond with 'I don't have that information.' Avoid creating unsupported solutions or assumptions."},

@@ -1,94 +1,77 @@
 /* General Layout */
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     font-family: 'Arial', sans-serif;
-    padding: 20px;
-    background-color: #f9f9f9; /* Light background color for the entire page */
+    background-color: #f9f9f9; /* Light background for the entire page */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
+.main-container {
+    width: 100%; /* Use the full width of the page */
+    height: 100%; /* Use the full height of the page */
+    max-width: none; /* Remove max-width constraint */
+    margin: 0; /* Remove margin to align with page edges */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width/height calculations */
+    background-color: #f9f9f9; /* Light background for the page */
+}
+
+/* Title */
 .title {
-    font-size: 2.5em;
+    font-size: 3em; /* Larger title */
     font-weight: bold;
     color: #2c3e50; /* Dark blue color for the title */
     text-align: center;
     margin-bottom: 15px;
 }
 
+/* Description */
 .description {
-    font-size: 1.3em;
+    font-size: 1.5em; /* Slightly larger description text */
     color: #7f8c8d;
     text-align: center;
     margin-bottom: 30px;
 }
 
-.input-group, .query-section, .download-section {
+/* Input Groups and Sections */
+.input-group, 
+.query-section, 
+.download-section {
     margin-bottom: 20px;
+    text-align: center; /* Center align input groups */
 }
 
-/* Labels and Inputs */
+/* Labels */
 .label {
     font-weight: bold;
     color: #34495e;
-    font-size: 1.1em;
-}
-/* COVID Peak Period Button Styling */
-#covid-peak-button {
-    padding: 10px 20px;
-    background-color: #ff6f61; /* Distinct color for the COVID period button */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
+    font-size: 1.2em;
 }
 
-#covid-peak-button:hover {
-    background-color: #e35b50; /* Darker shade on hover */
-}
-
-.input-sizer.stacked {
-    width: 100%;
-    margin-top: 5px;
-}
-
-/* Query Section */
-.query-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    justify-content: center;
-}
-
-.response-box {
-    margin-top: 10px;
-    font-size: 1em;
-    color: #007acc;
-}
-
-/* Button */
+/* Buttons */
 .button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     background-color: #007acc;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.1em;
+    font-size: 1.2em;
     transition: background-color 0.3s ease;
 }
 
 .button:hover {
-    background-color: #005fa3;
+    background-color: #005fa3; /* Darker blue on hover */
 }
 
-/* Confirmation Message */
-.confirmation-message {
+/* Confirmation Messages */
+.confirmation-messages {
     color: #28a745;
     margin-top: 15px;
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
 
 /* Graph Styling */
@@ -97,12 +80,31 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 20px;
+    width: 100%; /* Ensure graphs take the full width */
 }
 
 .graph {
     flex: 1;
     min-width: 400px;
+    max-width: 48%; /* Limit graph width for balanced layout */
     margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white; /* Background for graphs */
+}
+
+/* Responsive Adjustments for Smaller Screens */
+@media screen and (max-width: 768px) {
+    .graph-container {
+        flex-direction: column; /* Stack graphs vertically */
+        gap: 15px;
+    }
+
+    .graph {
+        min-width: 100%;
+        max-width: 100%;
+    }
 }
 
 /* LLM Response */
@@ -115,7 +117,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
-    max-width: 80%;
+    width: 80%; /* Center and restrict width */
     margin-left: auto;
     margin-right: auto;
     line-height: 1.5;
@@ -123,14 +125,41 @@
     word-wrap: break-word;
 }
 
-/* Graph Container: Responsive behavior */
-@media screen and (max-width: 768px) {
-    .graph-container {
-        flex-direction: column;
-        gap: 15px;
-    }
+/* Tooltip Styling */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
 
-    .graph {
-        min-width: 100%;
-    }
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the button */
+    left: 50%;
+    margin-left: -100px; /* Center the tooltip */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s;
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* Arrow on top of tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1; /* Smooth appearance */
 }
