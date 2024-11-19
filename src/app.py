@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
 import os
+import plotly, kaleido
 from datetime import datetime
 from openai import OpenAI
 from dash.exceptions import PreventUpdate
@@ -13,6 +14,8 @@ from utils import  slicing_df, col_change, convert_percent_to_num, encode_image
 #     raise ValueError("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
 
 df = pd.read_csv('/app/data/MTA_Daily_Ridership.csv')
+min_date = df['Date'].min()
+max_date = df['Date'].max()
 #df = pd.read_csv('/Users/rishinigam/kaggle_competitions/dash_app_november_24/dataset/MTA_Daily_Ridership.csv')
 
 saved_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -26,8 +29,8 @@ app = Dash(__name__)
 
 # Layout of the app
 app.layout = html.Div(className="main-container", children=[
-    html.H1("MTA Post-Pandemic Ridership Recovery Trends", className="title"),
-    html.P("Explore ridership trends across MTA services post-pandemic.", className="description"),
+    html.H1("NYC-MTA Post-Pandemic Ridership Recovery Trends", className="title"),
+    html.P("Explore ridership trends across MTA services pre and post-pandemic.", className="description"),
     
     # Dropdown to select service type
     html.Div([
@@ -54,8 +57,8 @@ app.layout = html.Div(className="main-container", children=[
         html.Label("Select Date Range:", className="label"),
         dcc.DatePickerRange(
             id='Date',
-            start_date=pd.to_datetime('2020-01-01'),
-            end_date=pd.to_datetime('2020-12-31'),
+            start_date=min_date,
+            end_date=max_date,
             display_format='DD-MM-YYYY',
             className="input-sizer stacked",
         ),

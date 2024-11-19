@@ -1,128 +1,88 @@
 /* General Layout */
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9; /* Light background for the entire page */
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-}
-
 .main-container {
-    width: 100%; /* Use the full width of the page */
-    height: 100%; /* Use the full height of the page */
-    max-width: none; /* Remove max-width constraint */
-    margin: 0; /* Remove margin to align with page edges */
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
     padding: 20px;
-    box-sizing: border-box; /* Include padding in width/height calculations */
-    background-color: #f9f9f9; /* Light background for the page */
+    background-color: #f9f9f9; /* Light background color for the entire page */
 }
 
-/* Title */
 .title {
-    font-size: 3em; /* Larger title */
+    font-size: 2.5em;
     font-weight: bold;
     color: #2c3e50; /* Dark blue color for the title */
     text-align: center;
     margin-bottom: 15px;
 }
 
-/* Description */
 .description {
-    font-size: 1.5em; /* Slightly larger description text */
+    font-size: 1.3em;
     color: #7f8c8d;
     text-align: center;
     margin-bottom: 30px;
 }
 
-/* Input Groups and Sections */
-.input-group, 
-.query-section, 
-.download-section {
-    margin-bottom: 20px;
-    text-align: center; /* Center align input groups */
+/* Input Field Styling */
+.input-field {
+    width: 100%; /* Full width within the container */
+    max-width: 600px; /* Match the width of LLM input text */
+    padding: 10px; /* Consistent padding */
+    font-size: 1em; /* Match font size */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in the width */
 }
 
-/* Labels */
-.label {
-    font-weight: bold;
-    color: #34495e;
-    font-size: 1.2em;
+#api-key-input, .query-section .input-sizer {
+    /* Apply the .input-field style */
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto; /* Center alignment for standalone inputs */
 }
 
-/* Buttons */
+/* General Button Styling */
 .button {
-    padding: 12px 24px;
+    padding: 10px 20px;
     background-color: #007acc;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.2em;
+    font-size: 1em;
     transition: background-color 0.3s ease;
 }
 
 .button:hover {
-    background-color: #005fa3; /* Darker blue on hover */
+    background-color: #005fa3;
 }
 
-/* Confirmation Messages */
-.confirmation-messages {
-    color: #28a745;
-    margin-top: 15px;
-    font-size: 1.2em;
+/* Dropdown Styling */
+#service-type {
+    max-width: 300px; /* Limit dropdown width */
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
 }
 
-/* Graph Styling */
-.graph-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-    width: 100%; /* Ensure graphs take the full width */
+/* COVID Peak Button and Tooltip */
+#covid-peak-button {
+    position: relative; /* Position for tooltip */
+    padding: 10px 20px;
+    background-color: #ff6f61; /* Distinct color for the COVID period button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
 }
 
-.graph {
-    flex: 1;
-    min-width: 400px;
-    max-width: 48%; /* Limit graph width for balanced layout */
-    margin: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: white; /* Background for graphs */
-}
-
-/* Responsive Adjustments for Smaller Screens */
-@media screen and (max-width: 768px) {
-    .graph-container {
-        flex-direction: column; /* Stack graphs vertically */
-        gap: 15px;
-    }
-
-    .graph {
-        min-width: 100%;
-        max-width: 100%;
-    }
-}
-
-/* LLM Response */
-.llm-response {
-    margin-top: 20px;
-    font-size: 1.2em;
-    color: #333;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-    width: 80%; /* Center and restrict width */
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.5;
-    font-family: 'Arial', sans-serif;
-    word-wrap: break-word;
+#covid-peak-button:hover {
+    background-color: #e35b50; /* Darker shade on hover */
 }
 
 /* Tooltip Styling */
@@ -143,9 +103,9 @@ body, html {
     z-index: 1;
     bottom: 125%; /* Position above the button */
     left: 50%;
-    margin-left: -100px; /* Center the tooltip */
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.3s;
+    transform: translateX(-50%); /* Center the tooltip */
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .tooltip-text::after {
@@ -153,7 +113,7 @@ body, html {
     position: absolute;
     top: 100%; /* Arrow on top of tooltip */
     left: 50%;
-    margin-left: -5px;
+    transform: translateX(-50%);
     border-width: 5px;
     border-style: solid;
     border-color: black transparent transparent transparent;
@@ -161,5 +121,62 @@ body, html {
 
 .tooltip-container:hover .tooltip-text {
     visibility: visible;
-    opacity: 1; /* Smooth appearance */
+    opacity: 1;
+}
+
+/* Query Section */
+.query-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.query-section .input-sizer {
+    width: 80%; /* Wider input field */
+    max-width: 600px;
+}
+
+/* LLM Response */
+.llm-response {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    max-width: 80%; /* Ensure the response box is not too wide */
+    line-height: 1.5;
+    font-family: 'Arial', sans-serif;
+    word-wrap: break-word;
+    margin-left: auto; /* Align the box to the left */
+    margin-right: auto; /* Center align the box horizontally */
+}
+
+/* Responsive Graph Container */
+.graph-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.graph {
+    flex: 1;
+    min-width: 400px;
+    margin: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .graph-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .graph {
+        min-width: 100%;
+    }
 }
