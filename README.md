@@ -8,6 +8,8 @@ Submission for NYC MTA ridership challenge at plotly and Maven Analytics
 - Ask query related to graph
 - LLM will reply with a simpler summarisation.
 
+![](https://github.com/rishi-wqd190004/NYC-MTA-ridership-challenge/blob/main/images/flow_dash_app.mp4)
+
 # To run on your device
 
 ## Use Docker
